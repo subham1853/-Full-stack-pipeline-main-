@@ -23,7 +23,7 @@ Complete step-by-step guide to set up the CI/CD pipeline from scratch.
 # Create IAM policy for EKS management
 cat > eks-policy.json << 'EOF'
 {
-  "Version": "2012-10-17",
+  "Version": "2016-04-17",
   "Statement": [
     {
       "Effect": "Allow",
