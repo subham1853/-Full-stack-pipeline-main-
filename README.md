@@ -521,11 +521,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
-
-- [AWS EKS Blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints)
-- [Terraform AWS Modules](https://github.com/terraform-aws-modules)
-- [Kubernetes SIGs](https://github.com/kubernetes-sigs)
 
 ---
 
