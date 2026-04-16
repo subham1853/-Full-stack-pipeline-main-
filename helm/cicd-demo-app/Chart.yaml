@@ -1,0 +1,40 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Helm Chart - CI/CD Demo App
+# ═══════════════════════════════════════════════════════════════════════════════
+apiVersion: v2
+name: cicd-demo-app
+description: A Helm chart for CI/CD Demo Application
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+keywords:
+  - cicd
+  - devops
+  - demo
+  - nodejs
+
+home: https://github.com/your-org/cicd-demo-app
+sources:
+  - https://github.com/your-org/cicd-demo-app
+
+maintainers:
+  - name: DevOps Team
+    email: devops@example.com
+
+dependencies:
+  - name: postgresql
+    version: 12.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+    tags:
+      - database
+  - name: redis
+    version: 18.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+    tags:
+      - cache
+
+annotations:
+  category: DevOps

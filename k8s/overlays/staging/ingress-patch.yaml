@@ -1,0 +1,26 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Staging Ingress Patch
+# ═══════════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cicd-demo-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    external-dns.alpha.kubernetes.io/hostname: "staging.cicd-demo.example.com"
+spec:
+  rules:
+    - host: staging.cicd-demo.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cicd-demo-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - staging.cicd-demo.example.com
+      secretName: staging-cicd-demo-tls

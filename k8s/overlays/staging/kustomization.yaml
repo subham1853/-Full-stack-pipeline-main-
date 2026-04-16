@@ -1,0 +1,46 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Staging Environment - Kustomize Overlay
+# ═══════════════════════════════════════════════════════════════════════════════
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base resources
+resources:
+  - ../../base
+
+# Namespace
+namespace: staging
+
+# Name prefix for staging
+namePrefix: staging-
+
+# Common labels
+commonLabels:
+  environment: staging
+  app.kubernetes.io/instance: staging
+
+# Images - will be updated by CI/CD
+images:
+  - name: cicd-demo-app
+    newName: ghcr.io/your-org/cicd-demo-app
+    newTag: staging-latest
+
+# Patches for staging environment
+patchesStrategicMerge:
+  - deployment-patch.yaml
+  - ingress-patch.yaml
+
+# ConfigMap for staging
+configMapGenerator:
+  - name: app-config
+    literals:
+      - NODE_ENV=staging
+      - LOG_LEVEL=debug
+      - API_RATE_LIMIT=100
+
+# Secret for staging (use external secrets in production)
+secretGenerator:
+  - name: app-secrets
+    literals:
+      - DB_PASSWORD=staging-password
+      - API_KEY=staging-api-key

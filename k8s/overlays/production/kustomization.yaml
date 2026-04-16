@@ -1,0 +1,51 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Production Environment - Kustomize Overlay
+# ═══════════════════════════════════════════════════════════════════════════════
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base resources
+resources:
+  - ../../base
+
+# Namespace
+namespace: production
+
+# Name prefix for production
+namePrefix: prod-
+
+# Common labels
+commonLabels:
+  environment: production
+  app.kubernetes.io/instance: production
+  criticality: high
+
+# Images - will be updated by CI/CD
+images:
+  - name: cicd-demo-app
+    newName: ghcr.io/your-org/cicd-demo-app
+    newTag: v1.0.0
+
+# Patches for production environment
+patchesStrategicMerge:
+  - deployment-patch.yaml
+  - ingress-patch.yaml
+  - hpa-patch.yaml
+
+# ConfigMap for production
+configMapGenerator:
+  - name: app-config
+    literals:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - API_RATE_LIMIT=1000
+
+# Secret for production (use external secrets manager)
+secretGenerator:
+  - name: app-secrets
+    literals:
+      - DB_PASSWORD=prod-placeholder
+      - API_KEY=prod-placeholder
+
+# Use external secrets for production
+# In production, use tools like External Secrets Operator or Vault

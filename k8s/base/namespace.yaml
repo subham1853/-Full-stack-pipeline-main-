@@ -1,0 +1,11 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Kubernetes Namespace
+# ═══════════════════════════════════════════════════════════════════════════════
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cicd-demo
+  labels:
+    app.kubernetes.io/name: cicd-demo
+    app.kubernetes.io/component: namespace
+    istio-injection: enabled

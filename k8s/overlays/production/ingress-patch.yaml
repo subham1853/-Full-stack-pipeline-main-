@@ -1,0 +1,60 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Production Ingress Patch
+# ═══════════════════════════════════════════════════════════════════════════════
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cicd-demo-ingress
+  annotations:
+    # Production SSL
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    external-dns.alpha.kubernetes.io/hostname: "app.cicd-demo.example.com,www.cicd-demo.example.com"
+    
+    # Enhanced security for production
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/hsts: "true"
+    nginx.ingress.kubernetes.io/hsts-max-age: "31536000"
+    nginx.ingress.kubernetes.io/hsts-include-subdomains: "true"
+    
+    # Rate limiting - stricter for production
+    nginx.ingress.kubernetes.io/limit-rps: "20"
+    nginx.ingress.kubernetes.io/limit-connections: "10"
+    
+    # WAF annotations (if using ModSecurity)
+    nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+    nginx.ingress.kubernetes.io/enable-owasp-core-rules: "true"
+    
+    # CDN/Cache headers
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Cache-Control "public, max-age=300" always;
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-XSS-Protection "1; mode=block" always;
+spec:
+  rules:
+    - host: app.cicd-demo.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cicd-demo-service
+                port:
+                  number: 80
+    - host: www.cicd-demo.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cicd-demo-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - app.cicd-demo.example.com
+        - www.cicd-demo.example.com
+      secretName: prod-cicd-demo-tls
